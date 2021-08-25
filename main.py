@@ -31,28 +31,51 @@ class MainScreen(BoxLayout):
     def select_files(self, selection):
         """Stores file path as a list of strings"""
         self.image_list = selection
-        self.display_filenames(self.image_list)
+        self.extract_data(self.image_list)
+        self.display_filenames()
         self.select_dismiss()  # dismisses the popup once selection has been made
 
-    def display_filenames(self, image_list):
-        """Create a string variable of file paths to be displayed in filenames label"""
-        image_list_formatted = ""
-        for image in self.image_list:
-            image_list_formatted += image + "\n"
-        self.ids.filenames.text = image_list_formatted
+    def extract_data(self, image_list):
+        """Extract EXIF information from each file"""
+        self.original_filename_text = ""
+        self.new_filename_text = ""
+        self.original_filename_list = []
+        self.new_filename_list = []
 
-    def rename(self):
         for image in self.image_list:
             file = image
             with exiftool.ExifTool() as et:
                 metadata = et.get_metadata(file)
 
-            date = metadata['EXIF:DateTimeOriginal']
-            date_object = dt.strptime(date, '%Y:%m:%d %H:%M:%S')
-            date_object_formatted = dt.strftime(date_object, '%Y-%m-%d  %H-%M-%S')
-            os.rename(file, date_object_formatted)
+            date = metadata['EXIF:DateTimeOriginal']   # extract date picture taken from metadata
+            self.directory = metadata['File:Directory']  # extract file directory of picture
+            extension = metadata['File:FileTypeExtension']  # extract file extension type
 
-# works if in the same directory. Need to find a way to make it work for files in different directories.
+            self.format_data(date, extension, file)
+
+    def format_data(self, date, extension, file):
+        """Create a string of the desired naming format"""
+        date_object = dt.strptime(date, '%Y:%m:%d %H:%M:%S')
+        date_object_formatted = dt.strftime(date_object, '%Y-%m-%d  %H-%M-%S')
+
+        new_filename = f"{date_object_formatted}.{extension}"
+
+        self.original_filename_text += file + "\n"
+        self.new_filename_text += new_filename + "\n"
+        self.original_filename_list.append(file)
+        self.new_filename_list.append(new_filename)
+
+    def display_filenames(self):
+        """Displays original and new filenames"""
+        self.ids.original_filenames.text = self.original_filename_text
+        self.ids.new_filenames.text = self.new_filename_text
+
+    def rename(self):
+        """Renames file in original directory"""
+        for original_img in self.original_filename_list:
+            for new_img in self.new_filename_list:
+                os.rename(original_img, f"{self.directory}/{new_img}")
+
 
 
 
