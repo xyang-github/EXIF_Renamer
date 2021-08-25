@@ -4,34 +4,35 @@
     ScrollView:
         do_scroll_x: False
         do_scroll_y: True
-
         Label:
+            id: filenames
             size_hint_x: .7
-            text: "list of filenames"
+            text:
     BoxLayout:
         orientation: "vertical"
         size_hint_x: .3
         Button:
-            text: "Load"
-            on_press:
+            text: "Select Files"
+            on_press: root.select()
         Button:
             text: "Rename"
         Label:
             text: "Description"
 
-<LoadScreen>:
+<SelectDialog>:
     BoxLayout:
         size: root.size
         pos: root.pos
         orientation: "vertical"
-        FileChooserListView:
+        FileChooserIconView:
             id: filedirectory
+            multiselect: True
         BoxLayout:
             size_hint_y: None
             height: 50
             Button:
                 text: "Select"
-                on_release: root.load(filedirectory.selection)
+                on_release: app.root.select_files(filedirectory.selection)
             Button:
                 text: "Cancel"
                 on_release: root.cancel()
