@@ -1,6 +1,6 @@
 import exiftool
 import os
-import datetime as dt
+from datetime import datetime as dt
 from kivy.app import App
 from kivy.lang import Builder
 from kivy.properties import ObjectProperty
@@ -30,17 +30,29 @@ class MainScreen(BoxLayout):
 
     def select_files(self, selection):
         """Stores file path as a list of strings"""
-        image_list = selection
-        self.display_filenames(image_list)
+        self.image_list = selection
+        self.display_filenames(self.image_list)
         self.select_dismiss()  # dismisses the popup once selection has been made
 
     def display_filenames(self, image_list):
         """Create a string variable of file paths to be displayed in filenames label"""
         image_list_formatted = ""
-        for image in image_list:
+        for image in self.image_list:
             image_list_formatted += image + "\n"
         self.ids.filenames.text = image_list_formatted
 
+    def rename(self):
+        for image in self.image_list:
+            file = image
+            with exiftool.ExifTool() as et:
+                metadata = et.get_metadata(file)
+
+            date = metadata['EXIF:DateTimeOriginal']
+            date_object = dt.strptime(date, '%Y:%m:%d %H:%M:%S')
+            date_object_formatted = dt.strftime(date_object, '%Y-%m-%d  %H-%M-%S')
+            os.rename(file, date_object_formatted)
+
+# works if in the same directory. Need to find a way to make it work for files in different directories.
 
 
 
