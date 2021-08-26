@@ -1,30 +1,80 @@
 
 <MainScreen>:
-    orientation: "horizontal"
-    ScrollView:
-        do_scroll_x: True
-        do_scroll_y: True
-        Label:
-            id: original_filenames
-            size_hint_x: .5
-            text:
-    ScrollView:
-        do_scroll_x: True
-        do_scroll_y: True
-        Label:
-            id: new_filenames
-            size_hint_x: .2
+    canvas.before:
+        Color:
+            rgba: 1, 1, 1, 1
+        Rectangle:
+            size: self.size
+            pos: self.pos
+    orientation: "vertical"
+    padding: 10
     BoxLayout:
-        orientation: "vertical"
-        size_hint_x: .3
+        orientation: "horizontal"
+        spacing: 5
+        BoxLayout:
+            orientation: "vertical"
+            Label:
+                canvas.before:
+                    Color:
+                        rgba: 36/255, 47/255, 64/255,  1
+                    Rectangle:
+                        size: self.size
+                        pos: self.pos
+                size_hint_y: .08
+                bold: True
+                text: "Original Filename"
+            ScrollView:
+                do_scroll_x: False
+                do_scroll_y: True
+                Label:
+                    id: original_filenames
+                    size_hint_x: .5
+                    text_size: self.width, self.height
+                    halign: "left"
+                    valign: "top"
+                    color: 16/255, 73/255, 17/255, 1
+                    text:
+        BoxLayout:
+            orientation: "vertical"
+            Label:
+                canvas.before:
+                    Color:
+                        rgba: 204/255, 164/255, 59/255, 1
+                    Rectangle:
+                        size: self.size
+                        pos: self.pos
+                size_hint_y: .08
+                bold: True
+                text: "New Filename"
+            ScrollView:
+                do_scroll_x: False
+                do_scroll_y: True
+                Label:
+                    id: new_filenames
+                    size_hint_x: .5
+                    text_size: self.width, self.height
+                    halign: "left"
+                    valign: "top"
+                    color: 219/255, 137/255, 6/255, 1
+                    text:
+    BoxLayout:
+        spacing: 5
+        orientation: "horizontal"
         Button:
+            size_hint_y: .1
+            background_normal: ""
+            background_color: 54/255, 54/255, 54/255, 1
             text: "Select Files"
             on_press: root.select()
         Button:
+            id: rename
+            size_hint_y: .1
+            background_normal: ""
+            background_color: 54/255, 54/255, 54/255, 1
+            disabled: True
+            opacity: 0
             text: "Rename"
             on_press: root.rename()
-        Label:
-            text: "Description"
 
 <SelectDialog>:
     BoxLayout:
