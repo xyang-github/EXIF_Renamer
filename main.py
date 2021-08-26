@@ -6,6 +6,7 @@ from kivy.lang import Builder
 from kivy.properties import ObjectProperty
 from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.floatlayout import FloatLayout
+from kivy.uix.gridlayout import GridLayout
 from kivy.uix.popup import Popup
 
 
@@ -43,24 +44,25 @@ class MainScreen(BoxLayout):
         self.new_filename_list = []
 
         for image in self.image_list:
-            file = image
+            file = image  # full path to the original file
             with exiftool.ExifTool() as et:
                 metadata = et.get_metadata(file)
 
+            original_filename = metadata['File:FileName']  # extract original filename of image
             date = metadata['EXIF:DateTimeOriginal']   # extract date picture taken from metadata
             self.directory = metadata['File:Directory']  # extract file directory of picture
             extension = metadata['File:FileTypeExtension']  # extract file extension type
 
-            self.format_data(date, extension, file)
+            self.format_data(date, extension, original_filename, file)
 
-    def format_data(self, date, extension, file):
+    def format_data(self, date, extension, original_filename, file):
         """Create a string of the desired naming format"""
         date_object = dt.strptime(date, '%Y:%m:%d %H:%M:%S')
         date_object_formatted = dt.strftime(date_object, '%Y-%m-%d  %H-%M-%S')
 
         new_filename = f"{date_object_formatted}.{extension}"
 
-        self.original_filename_text += file + "\n"
+        self.original_filename_text += original_filename + "\n"
         self.new_filename_text += new_filename + "\n"
         self.original_filename_list.append(file)
         self.new_filename_list.append(new_filename)
