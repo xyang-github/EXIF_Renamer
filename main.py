@@ -59,7 +59,7 @@ class MainScreen(BoxLayout):
             self.directory = metadata['File:Directory']  # extract file directory of picture
             extension = metadata['File:FileTypeExtension']  # extract file extension type
 
-            self.format_data(date, extension, original_filename, file)
+            self.format_data(date, extension, original_filename)
 
     def format_data(self, date, extension, original_filename):
         """Create a string of the desired naming format"""
